@@ -1,9 +1,50 @@
 import React, { useState } from "react";
+import Button from "./Button";
 import "./LoginForm.css";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState(``);
-  const [password, setPassword] = useState(``);
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+
+  //fatch data from data base
+  const url = "http://localhost:5000/api/v1/auth/login";
+
+  const fetchData = async (Logindata) => {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          accept: "application/json",
+        },
+        body: JSON.stringify(Logindata),
+      });
+      const json = await response.json();
+      console.log(json);
+      setEmail(json.slip.email);
+      setPassword(json.slip.password);
+    } catch (error) {
+      console.log("error", error);
+    }
+    console.log(email, password);
+  };
+
+  const login = (Logindata) => {
+    fetchData(Logindata);
+    /*fetch("http://localhost:5000/api/v1/auth/login", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify(Logindata),
+    }).then((response) => 
+      response.json()).then((response) => {
+        console.log(response);
+    }).catch((err) => {
+        console.log(err);
+    });*/
+  };
 
   const emailHandler = (event) => {
     setEmail(event.target.value);
@@ -15,9 +56,11 @@ const LoginForm = () => {
 
   const formSubmitHandler = (event) => {
     const Logindata = {
-      emailId: email,
+      email: email,
       password: password,
     };
+
+    login(Logindata);
 
     console.log(Logindata);
     event.preventDefault();
@@ -41,6 +84,7 @@ const LoginForm = () => {
               name="email"
               placeholder="e-mail"
             />
+
             <input
               onChange={passwordHandler}
               value={password}
@@ -50,7 +94,7 @@ const LoginForm = () => {
               name="login"
               placeholder="password"
             />
-            <input type="submit" className="fadeIn fourth" value="Log In" />
+            <Button />
           </form>
         </div>
       </div>
