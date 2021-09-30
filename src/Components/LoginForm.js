@@ -6,46 +6,6 @@ const LoginForm = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
-  //fatch data from data base
-  const url = "http://localhost:5000/api/v1/auth/login";
-
-  const fetchData = async (Logindata) => {
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          accept: "application/json",
-        },
-        body: JSON.stringify(Logindata),
-      });
-      const json = await response.json();
-      console.log(json);
-      setEmail(json.slip.email);
-      setPassword(json.slip.password);
-    } catch (error) {
-      console.log("error", error);
-    }
-    console.log(email, password);
-  };
-
-  const login = (Logindata) => {
-    fetchData(Logindata);
-    /*fetch("http://localhost:5000/api/v1/auth/login", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        accept: "application/json",
-      },
-      body: JSON.stringify(Logindata),
-    }).then((response) => 
-      response.json()).then((response) => {
-        console.log(response);
-    }).catch((err) => {
-        console.log(err);
-    });*/
-  };
-
   const emailHandler = (event) => {
     setEmail(event.target.value);
   };
@@ -66,6 +26,50 @@ const LoginForm = () => {
     event.preventDefault();
     setEmail("");
     setPassword("");
+  };
+  // if (emailHandler === " "){
+  //  console.log("ITS WORKING")
+  // }
+
+  //API Function
+  //fatch data from data base throught API
+  const url = "http://localhost:5000/api/v1/auth/login";
+
+  const fetchData = async (Logindata) => {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          accept: "application/json",
+        },
+        body: JSON.stringify(Logindata),
+      });
+      const json = await response.json();
+      console.log(json);
+      setEmail(this.state.email);
+      setPassword(this.state.password);
+    } catch (error) {
+      console.log("error", error);
+    }
+    console.log(email, password);
+  };
+
+  const login = (Logindata) => {
+    fetchData(Logindata);
+    /*fetch("http://localhost:5000/api/v1/auth/login", {
+       method: "POST",
+       headers: {
+         "content-type": "application/json",
+         accept: "application/json",
+       },
+       body: JSON.stringify(Logindata),
+     }).then((response) => 
+       response.json()).then((response) => {
+         console.log(response);
+     }).catch((err) => {
+         console.log(err);
+     });*/
   };
 
   return (
