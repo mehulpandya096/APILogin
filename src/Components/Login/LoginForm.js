@@ -1,40 +1,45 @@
 import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "./Button";
 import "./LoginForm.css";
+import { useHistory } from "react-router-dom";
 
 const LoginForm = () => {
+  //input State
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
 
+  //email handler
   const emailHandler = (event) => {
     setEmail(event.target.value);
   };
 
+  //password handler
   const passwordHandler = (event) => {
     setPassword(event.target.value);
   };
 
+  //submit handler
   const formSubmitHandler = (event) => {
     const Logindata = {
       email: email,
       password: password,
     };
-
     login(Logindata);
-
-    console.log(Logindata);
     event.preventDefault();
     setEmail("");
     setPassword("");
   };
-  // if (emailHandler === " "){
-  //  console.log("ITS WORKING")
-  // }
 
-  //API Function
-  //fatch data from data base throught API
-  const url = "http://localhost:5000/api/v1/auth/login";
+  //Login Api Call
+  const login = (Logindata) => {
+    fetchData(Logindata);
+  };
+  const history = useHistory();
+  const url = "http://192.168.1.196:8090/api/user/login";
 
+  //pass api Login data
   const fetchData = async (Logindata) => {
     try {
       const response = await fetch(url, {
@@ -46,32 +51,23 @@ const LoginForm = () => {
         body: JSON.stringify(Logindata),
       });
       const json = await response.json();
-      console.log(json);
-      setEmail(this.state.email);
-      setPassword(this.state.password);
+
+      //user Login validation
+      if (json.status === 200) {
+        localStorage.setItem("TOKEN", json.token);
+        history.push("/Dashboard");
+      }
+
+      //pending plase Enter valid user and mail
+      error(json.message);
     } catch (error) {
       console.log("error", error);
     }
-    console.log(email, password);
   };
-
-  const login = (Logindata) => {
-    fetchData(Logindata);
-    /*fetch("http://localhost:5000/api/v1/auth/login", {
-       method: "POST",
-       headers: {
-         "content-type": "application/json",
-         accept: "application/json",
-       },
-       body: JSON.stringify(Logindata),
-     }).then((response) => 
-       response.json()).then((response) => {
-         console.log(response);
-     }).catch((err) => {
-         console.log(err);
-     });*/
+  // Error-using toast
+  const error = (message) => {
+    toast(message);
   };
-
   return (
     <div>
       <div className="wrapper fadeInDown">
@@ -99,6 +95,7 @@ const LoginForm = () => {
               placeholder="password"
             />
             <Button />
+            <ToastContainer />
           </form>
         </div>
       </div>
